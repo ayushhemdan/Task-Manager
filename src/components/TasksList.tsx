@@ -26,7 +26,7 @@ const TasksList = ({ task, handleCheckbox, handleDelete, handleEdit }: TasksList
         <span className={`rounded-2xl p-1 text-xs ${(task.priority === 'low') ? 'bg-green-100 text-green-900 border border-green-300' : (task.priority === 'medium') ? 'text-yellow-900 border border-yellow-5 bg-yellow-100' : 'bg-red-100 text-red-900 border border-red-300'}`}>{task.priority}</span>
         <span className='bg-blue-100 rounded-2xl p-1 text-xs text-blue-900 border border-blue-300'>{task.category}</span>
         <span className='text-xs text-gray-500 flex gap-2 justify-center items-center'>< FaRegCalendarAlt />{task.createdAt.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-        <button onClick={() => handleEdit(task.id)} className='text-sm text-gray-600 border-2 rounded-xl px-1 ml-auto hover:bg-gray-200'>Edit</button>
+        <button onClick={() => handleEdit(task.id)} className='text-sm text-gray-600 border-2 rounded-xl px-1 m-auto hover:bg-gray-200'>Edit</button>
       </div>
     </div>
 
