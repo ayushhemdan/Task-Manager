@@ -1,6 +1,6 @@
-import  { createContext, useContext, useReducer, useState } from "react";
-import type{ ReactNode, SetStateAction } from "react";
-import  type{ Task } from "../../App";
+import { createContext, useContext, useReducer, useState } from "react";
+import type { ReactNode, SetStateAction } from "react";
+import type { Task } from "../../App";
 import type { Action } from "../../App";
 
 export type TaskContextType = {
@@ -13,22 +13,20 @@ export type TaskContextType = {
   editId: string,
   setEditId: React.Dispatch<SetStateAction<string>>,
   filtering: string,
-  setFiltering: React.Dispatch<SetStateAction<string>> ,
-  // tval: React.RefObject<HTMLInputElement| null>,
-  // usePriority: React.RefObject<HTMLSelectElement | null>,
-  // useCategory: React.RefObject<HTMLInputElement | null>,
-
+  setFiltering: React.Dispatch<SetStateAction<string>>,
+  isAdded: boolean,
+  setIsAdded: React.Dispatch<SetStateAction<boolean>>,
 }
 
-  const intialStateOfTasks = () => {
-    const stored = localStorage.getItem('data');
-    if (!stored) return [];
+const intialStateOfTasks = () => {
+  const stored = localStorage.getItem('data');
+  if (!stored) return [];
 
-    const parsed = JSON.parse(stored);
-    return parsed.map((task: Task) => (
-      { ...task, createdAt: new Date(task.createdAt) }
-    ));
-  }
+  const parsed = JSON.parse(stored);
+  return parsed.map((task: Task) => (
+    { ...task, createdAt: new Date(task.createdAt) }
+  ));
+}
 
 const tasksReducer = (state: Task[], action: Action) => {
   switch (action.type) {
@@ -55,21 +53,22 @@ const tasksReducer = (state: Task[], action: Action) => {
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
-export const TaskProvider = ({children} : {children : ReactNode}) =>{
-const [tasks, dispatch] = useReducer(tasksReducer, undefined, intialStateOfTasks);
+export const TaskProvider = ({ children }: { children: ReactNode }) => {
+  const [tasks, dispatch] = useReducer(tasksReducer, undefined, intialStateOfTasks);
 
 
-    const [priority, setPriority] = useState<string>('low');
-    const [category, setCategory] = useState<string>('General');
-    const [editId, setEditId] = useState<string>('');
-    // const [completed, setCompleted] = useState<string>('');
-    const [filtering, setFiltering] = useState('All');
-  
- return (
-<TaskContext.Provider value = {{tasks, dispatch, priority, setPriority, category, setCategory, editId, setEditId, filtering, setFiltering}} >
-  {children}
-</TaskContext.Provider>
- )
+  const [priority, setPriority] = useState<string>('low');
+  const [category, setCategory] = useState<string>('General');
+  const [editId, setEditId] = useState<string>('');
+  // const [completed, setCompleted] = useState<string>('');
+  const [filtering, setFiltering] = useState('All');
+  const [isAdded, setIsAdded] = useState<boolean>(false);
+
+  return (
+    <TaskContext.Provider value={{ isAdded, setIsAdded, tasks, dispatch, priority, setPriority, category, setCategory, editId, setEditId, filtering, setFiltering }} >
+      {children}
+    </TaskContext.Provider>
+  )
 }
 
 export const useTasks = () => {

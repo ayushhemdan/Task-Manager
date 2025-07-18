@@ -5,6 +5,8 @@ import { useTasks } from './components/context/TaskContext';
 import TasksFilter from './components/TasksFilter';
 import TasksList from './components/TasksList';
 import TaskTrack from './components/TaskTrack';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css'
 
 
 export type Task = {
@@ -27,7 +29,7 @@ export type Action =
 
 const App = () => {
 
-  const { tasks, dispatch, priority, category, setCategory, editId, setEditId, filtering, setFiltering } = useTasks();
+  const { tasks, dispatch, priority, category, setCategory, editId, setEditId, filtering, setFiltering, setIsAdded } = useTasks();
 
   const tval = useRef<HTMLInputElement>(null)
   const useCategory = useRef<HTMLInputElement>(null)
@@ -39,6 +41,7 @@ const App = () => {
 
   const handleNewTask = () => {
     if (!tval.current?.value) return;
+    setIsAdded(true);
     const t = {
       id: uuidv4(),
       text: tval.current.value,
@@ -55,6 +58,9 @@ const App = () => {
     }
     tval.current.value = '';
     console.log(tasks)
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1000)
   }
 
   const handleCheckbox = (id: any) => {
@@ -117,19 +123,28 @@ const App = () => {
     }
   }
 
-
+  const total = tasks.length;
+  const totalCompleted = tasks.filter(t => t.completed).length;
+  const percentage = (total > 0) ? Math.round(totalCompleted * 100 / total) : 0;
 
   return (
     <div>
+
       <div className="container space-y-6 m-auto mt-5 w-full px-5 lg:max-w-[45vw]">
         <section>
 
+          <div className='mb-3'>
+            <h1 className='text-3xl font-bold'>Task Manager</h1>
+          </div>
+
           <div>
-            <h1 className='text-3xl font-bold text-center'>Task Manager</h1>
+            <p className='mb-3 text-gray-600'>{totalCompleted} of {total} tasks completed</p>
+            <div className='w-full bg-gray-300 rounded-xl'>
+              <div className={`transition-all duration-300 ease-in-out w-[${percentage}%] py-1 bg-blue-800 rounded-xl`}></div>
+            </div>
           </div>
 
         </section>
-
         <section>
 
           <TaskInput
@@ -205,6 +220,7 @@ const App = () => {
         </div>
 
       </div>
+      {/* <ToastContainer/> */}
 
     </div>
   )
